@@ -42,3 +42,5 @@ for ((i = 0; i <= ${PROC_COUNT}; i++)){
 procList
 echo "Count processes: ";
 procCount
+
+echo 0;
