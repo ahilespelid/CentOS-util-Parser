@@ -11,21 +11,27 @@ do
     esac
 done
 
-if [[ 'NULL' == $MAX_ID ]] 
+if [[ -z $MAX_ID ]] 
 then
     MAX_ID=1
-else
-    MAX_ID=$((MAX_ID+1))
 fi
-echo "Max comics_id in comics_vs_group: $MAX_ID";
+echo "START CHECK BASES: $MAX_ID";
 if [ -z $PROC_COUNT ]
 then 
     echo "How mutch processes?"
     read PROC_COUNT
 fi
-echo "Stop comics_id for process: $PROC_COUNT";
+echo "STOP CHECK BASES: $PROC_COUNT"; cat /dev/null > ~/parsershell/_check.log
 
+     bash ~/parsershell/mysql_all_check.sh -t comics_artists -m ${MAX_ID} -p ${PROC_COUNT}    | tee -a ~/parsershell/_check.log
+     bash ~/parsershell/mysql_all_check.sh -t comics_categories -m ${MAX_ID} -p ${PROC_COUNT} | tee -a ~/parsershell/_check.log
+     bash ~/parsershell/mysql_all_check.sh -t comics_characters -m ${MAX_ID} -p ${PROC_COUNT} | tee -a ~/parsershell/_check.log
+     bash ~/parsershell/mysql_all_check.sh -t comics_groups -m ${MAX_ID} -p ${PROC_COUNT}     | tee -a ~/parsershell/_check.log
+     bash ~/parsershell/mysql_all_check.sh -t comics_languages -m ${MAX_ID} -p ${PROC_COUNT}  | tee -a ~/parsershell/_check.log
+     bash ~/parsershell/mysql_all_check.sh -t comics_parodies -m ${MAX_ID} -p ${PROC_COUNT}   | tee -a ~/parsershell/_check.log
+     bash ~/parsershell/mysql_all_check.sh -t comics_tags -m ${MAX_ID} -p ${PROC_COUNT}       | tee -a ~/parsershell/_check.log
 
+<< 'MULTILINE-COMMENT'
 #for ((i = ${MAX_ID}; i <= ${PROC_COUNT}; i++)){
      bash ~/parsershell/mysql_artists_check.sh -m ${MAX_ID} -p ${PROC_COUNT} | tee -a ~/parsershell/_check.log
      bash ~/parsershell/mysql_categories_check.sh -m ${MAX_ID} -p ${PROC_COUNT} | tee -a ~/parsershell/_check.log
@@ -37,8 +43,7 @@ echo "Stop comics_id for process: $PROC_COUNT";
 
     sleep 0.1
 #}
-
-<< 'MULTILINE-COMMENT'
 MULTILINE-COMMENT
 
+/opt/php73/bin/php /var/www/nowhent/data/www/last-prod.nowhentai.com/artisan cache:clear;
 echo 0;

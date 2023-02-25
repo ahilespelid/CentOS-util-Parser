@@ -9,7 +9,7 @@ case "$1" in
 -p) PROC_COUNT="$2"
     break ;;
 #-u) mysql -uroot nowhenati -e "INSERT INTO comics_vs_category (comics_id, category_id) SELECT b.comics_id, a.id AS category_id FROM (SELECT c.id AS comics_id, (SELECT cats FROM parser_data p WHERE p.post_id=url_id) AS persons FROM comics c WHERE c.id=${2}) AS b INNER JOIN comics_categories a ON b.persons REGEXP CONCAT('[[:<:]]', a.title, '[[:>:]]');"
--u) mysql -uroot nowhenati -e "INSERT INTO comics_vs_category (comics_id, category_id) SELECT b.comics_id, a.id AS category_id FROM (SELECT c.id AS comics_id, (SELECT cats FROM parser_data p WHERE p.post_id=url_id) AS persons FROM comics c WHERE c.id=${2}) AS b INNER JOIN comics_categories a ON b.persons LIKE CONCAT('%',a.title,'%');"
+-u) mysql -uroot nowhenati -e "INSERT INTO comics_vs_category (comics_id, category_id) SELECT b.comics_id, a.id AS category_id FROM (SELECT c.id AS comics_id, (SELECT cats FROM parser_data p WHERE p.post_id=url_id) AS persons FROM comics c WHERE c.id=${2}) AS b INNER JOIN comics_categories a ON (b.persons LIKE CONCAT('%',a.title,'%') OR b.persons LIKE CONCAT('%, ',a.title,'') OR b.persons LIKE CONCAT('',a.title,''));"
     echo "CREATE LINK CATS FROM comics_id: ${2} "
     exit 0;;
 *) echo "$1 is not an option"
@@ -37,7 +37,8 @@ fi
 echo "Stop comics_id for process: $PROC_COUNT";
 
 for ((i = ${MAX_ID}; i <= ${PROC_COUNT}; i++)){
-    mysql -uroot nowhenati -e "INSERT INTO comics_vs_category (comics_id, category_id) SELECT b.comics_id, a.id AS category_id FROM (SELECT c.id AS comics_id, (SELECT cats FROM parser_data p WHERE p.post_id=url_id) AS persons FROM comics c WHERE c.id=${i}) AS b INNER JOIN comics_categories a ON b.persons REGEXP CONCAT('[[:<:]]', a.title, '[[:>:]]');"
+    #mysql -uroot nowhenati -e "INSERT INTO comics_vs_category (comics_id, category_id) SELECT b.comics_id, a.id AS category_id FROM (SELECT c.id AS comics_id, (SELECT cats FROM parser_data p WHERE p.post_id=url_id) AS persons FROM comics c WHERE c.id=${i}) AS b INNER JOIN comics_categories a ON b.persons REGEXP CONCAT('[[:<:]]', a.title, '[[:>:]]');"
+    mysql -uroot nowhenati -e "INSERT INTO comics_vs_category (comics_id, category_id) SELECT b.comics_id, a.id AS category_id FROM (SELECT c.id AS comics_id, (SELECT cats FROM parser_data p WHERE p.post_id=url_id) AS persons FROM comics c WHERE c.id=${i}) AS b INNER JOIN comics_categories a ON (b.persons LIKE CONCAT('%',a.title,'%') OR b.persons LIKE CONCAT('%, ',a.title,'') OR b.persons LIKE CONCAT('',a.title,''));"
     echo "CREATE LINK CATS FROM comics_id: ${i} "
     sleep 1
 }

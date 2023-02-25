@@ -33,7 +33,7 @@ echo "Stop comics_id for process: $PROC_COUNT";
 #FULL=''
 
 for ((i = ${MAX_ID}; i <= ${PROC_COUNT}; i++)){
-    FULL=`mysql -uroot nowhenati -e "SELECT url_id, '+++' as awk, (SELECT autors FROM nowhenati.parser_data WHERE post_id=c.url_id) AS  parser_data, '+++' as awk, (SELECT title FROM nowhenati.comics_characters WHERE LOCATE(title, (SELECT autors FROM nowhenati.parser_data WHERE post_id=c.url_id)) > 0 LIMIT 1) AS comics_characters FROM nowhenati.comics c WHERE c.id=${i} ORDER BY url_id ASC;" | tail -n+2`
+    FULL=`mysql -uroot nowhenati -e "SELECT url_id, '+++' as awk, (SELECT characters FROM nowhenati.parser_data WHERE post_id=c.url_id) AS  parser_data, '+++' as awk, (SELECT title FROM nowhenati.comics_characters WHERE LOCATE(title, (SELECT characters FROM nowhenati.parser_data WHERE post_id=c.url_id)) > 0 LIMIT 1) AS comics_characters FROM nowhenati.comics c WHERE c.id=${i} ORDER BY url_id ASC;" | tail -n+2`
     echo " ${i} : COMICS_CHARACTERS"
     
     URL_ID=`echo ${FULL} | awk -F '+++' '{print $1}' | xargs`; PARSER_DATA=`echo ${FULL} | awk -F '+++' '{print $2}' | xargs`; COMICS_CHARACTERS=`echo ${FULL} | awk -F '+++' '{print $3}' | xargs`
