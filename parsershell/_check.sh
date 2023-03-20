@@ -46,4 +46,5 @@ echo "STOP CHECK BASES: $PROC_COUNT"; cat /dev/null > ~/parsershell/_check.log
 MULTILINE-COMMENT
 
 /opt/php73/bin/php /var/www/nowhent/data/www/last-prod.nowhentai.com/artisan cache:clear;
-echo 0;
+echo 1;
+exit 0;

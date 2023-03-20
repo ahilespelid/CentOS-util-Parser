@@ -74,4 +74,5 @@ for ((i = ${MAX_ID}; i <= ${PROC_COUNT}; i++)){
 MULTILINE-COMMENT
 
 /opt/php73/bin/php /var/www/nowhent/data/www/last-prod.nowhentai.com/artisan cache:clear;
-echo 0;
+echo 1;
+exit 0;

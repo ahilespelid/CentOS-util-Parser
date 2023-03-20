@@ -36,7 +36,7 @@ fi
 for ((i = 0; i <= ${PROC_COUNT}; i++)){
     if (( $i > procCount))
     then
-        screen -LdmS pars_proc${i} /opt/php73/bin/php /var/www/nowhent/data/www/last-prod.nowhentai.com/artisan parser:run &
+        screen -LdmS pars_proc${i} /opt/php73/bin/php /var/www/nowhent/data/www/last-prod.nowhentai.com/artisan parser:run --init &
     fi
     sleep 5
 }
